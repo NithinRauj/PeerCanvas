@@ -1,6 +1,7 @@
 {
     "ROOT_URL": "http://localhost:5000/",
     "CREATE_COURSE": "prof/createCourse/",
-    "CREATE_ACCOUNT": "user/createAcc/",
+    "SIGN_UP": "auth/signup/",
+    "SIGN_IN": "auth/signin/",
     "GET_DEPTS": "dept/all/"
 }
