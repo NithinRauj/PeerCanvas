@@ -18,7 +18,7 @@ const SigninPage = () => {
         setLoading(true);
         try {
             const res = await axios.post(`${API.ROOT_URL}${API.SIGN_IN}`, values);
-            const userData = res.data.userData
+            const userData = res.data.userData;
             if (res.data.err) {
                 toast({
                     title: 'Sign in failed!',
@@ -31,7 +31,7 @@ const SigninPage = () => {
             }
             dispatch(setUserData(userData));
             setLoading(false);
-            navigate('/home');
+            navigate(userData.type === 'student' ? '/student/home' : '/prof/home', { replace: true });
         } catch (err) {
             console.log(err);
             toast({
@@ -81,8 +81,8 @@ const SigninPage = () => {
                         />
                         <FormLabel htmlFor='accountType'>Account Type</FormLabel>
                         <Select {...register('accountType')}>
-                            <option value='student'>Student</option>
-                            <option value='professor'>Professor</option>
+                            <option key={'student'} value='student'>Student</option>
+                            <option key={'professor'} value='professor'>Professor</option>
                         </Select>
                         {['name', 'password', 'accountType'].map((field) => {
                             return <FormErrorMessage>

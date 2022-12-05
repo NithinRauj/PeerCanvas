@@ -1,26 +1,40 @@
 import React from 'react';
-import { FormControl, FormErrorMessage, FormLabel, Heading, Input, Button, Container } from '@chakra-ui/react';
+import { FormControl, FormErrorMessage, FormLabel, Heading, Input, Button, Container, useToast } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import API from '../data/api.json';
+import { useSelector } from 'react-redux';
 
-const CourseCreationForm = () => {
+const CreateCoursePage = () => {
     const { register, formState: { errors, isSubmitting }, handleSubmit } = useForm();
+    const state = useSelector((state) => state.app);
+    const toast = useToast();
 
 
     const onSubmit = async (values) => {
         try {
-            // For testing
-            // values = {
-            //     ...values,
-            //     deptId: '63815cc1a969cfe7323e2f56',
-            //     createdBy: '63842b193063898725d14e3c'
-            // };
-            const res = await axios.post(`${API.ROOT_URL}${API.CREATE_COURSE}`, values);
+            values = {
+                ...values,
+                deptId: state.userData.deptId,
+                createdBy: state.userData.userId,
+            }
+            const config = { headers: { 'authorization': 'Bearer ' + state.userData.accessToken } };
+            const res = await axios.post(`${API.ROOT_URL}${API.CREATE_COURSE}`, values, config);
             console.log(res.data);
+            showToast('Course created!', 'success');
         } catch (e) {
             console.error(e);
+            showToast('Error creating course!', 'error');
         }
+    }
+
+    const showToast = (title, status) => {
+        toast({
+            title,
+            status,
+            duration: 3000,
+            isClosable: true,
+        });
     }
 
     return (
@@ -40,7 +54,7 @@ const CourseCreationForm = () => {
                                 }
                             )}
                         />
-                        <FormLabel htmlFor='courseId'>Course Code</FormLabel>
+                        <FormLabel htmlFor='courseCode'>Course Code</FormLabel>
                         <Input
                             name='courseCode'
                             id='courseCode'
@@ -68,4 +82,4 @@ const CourseCreationForm = () => {
     )
 }
 
-export default CourseCreationForm
+export default CreateCoursePage

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Button, Container, Select, Text, useToast } from '@chakra-ui/react';
+import { Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Button, Container, Select, Text, useToast, Spinner } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import API from '../data/api.json';
 import { Link, useNavigate } from 'react-router-dom';
+import useAxios from '../hooks/useAxios';
 
 const SignupPage = () => {
 
@@ -12,15 +13,13 @@ const SignupPage = () => {
     const navigate = useNavigate();
     const toast = useToast();
 
-    useEffect(() => {
-        fetchDepts();
-    }, []);
+    const [res, err, loading] = useAxios({ method: 'get', url: `${API.ROOT_URL}${API.GET_DEPTS}` });
 
-    const fetchDepts = async () => {
-        const res = await axios.get(`${API.ROOT_URL}${API.GET_DEPTS}`);
-        console.log(res.data);
-        setDepts(res.data.depts);
-    }
+    useEffect(() => {
+        if (res) {
+            setDepts(res.depts);
+        }
+    }, [res]);
 
     const onSubmit = async (values) => {
         const res = await axios.post(`${API.ROOT_URL}${API.SIGN_UP}`, values);
@@ -77,6 +76,7 @@ const SignupPage = () => {
                                 <>
                                     <FormLabel htmlFor='deptId'>Departments</FormLabel>
                                     <Select {...register('deptId')}>
+                                        {loading ? <Spinner color={'black'} /> : null}
                                         {depts.map(dept => <option key={dept._id} value={dept._id}>{dept.name}</option>)}
                                     </Select>
                                 </> : null

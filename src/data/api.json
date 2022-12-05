@@ -1,7 +1,13 @@
 {
     "ROOT_URL": "http://localhost:5000/",
     "CREATE_COURSE": "prof/createCourse/",
+    "UPLOAD_ASSIGNMENT": "prof/uploadAssignment/",
     "SIGN_UP": "auth/signup/",
     "SIGN_IN": "auth/signin/",
-    "GET_DEPTS": "dept/all/"
+    "GET_DEPTS": "dept/all/",
+    "COURSES": "dept/courses/",
+    "GET_STUDENT_COURSES": "dept/courses/enrollments/",
+    "ENROLL": "student/enroll",
+    "ENROLLED_COURSES": "student/enrolledCourses/",
+    "GET_ASSIGNMENTS": "dept/assignments/"
 }
