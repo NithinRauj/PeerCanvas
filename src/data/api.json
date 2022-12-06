@@ -1,13 +1,16 @@
 {
     "ROOT_URL": "http://localhost:5000/",
+    "IPFS_URL": "https://ipfs.io/ipfs/",
     "CREATE_COURSE": "prof/createCourse/",
-    "UPLOAD_ASSIGNMENT": "prof/uploadAssignment/",
+    "CREATE_ASSIGNMENT": "prof/createAssignment/",
     "SIGN_UP": "auth/signup/",
     "SIGN_IN": "auth/signin/",
+    "LOGOUT": "auth/logout/",
     "GET_DEPTS": "dept/all/",
     "COURSES": "dept/courses/",
     "GET_STUDENT_COURSES": "dept/courses/enrollments/",
     "ENROLL": "student/enroll",
     "ENROLLED_COURSES": "student/enrolledCourses/",
-    "GET_ASSIGNMENTS": "dept/assignments/"
+    "GET_ASSIGNMENTS": "dept/assignments/",
+    "UPLOAD_SUBMISSION": "student/uploadSubmission/"
 }

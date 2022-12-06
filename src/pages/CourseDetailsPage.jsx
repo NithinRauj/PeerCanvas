@@ -15,6 +15,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import AssignmentTile from '../components/AssignmentTile';
 import API from '../data/api.json';
 import useAxios from '../hooks/useAxios';
+import getStorageClient from '../utils/getStorageClient';
 
 const CourseDetailsPage = () => {
 
@@ -50,21 +51,19 @@ const CourseDetailsPage = () => {
 
     const uploadFiles = async () => {
         try {
-            const formData = new FormData();
-            formData.append('assignment', file);
-            formData.append('name', name);
-            formData.append('courseId', id);
-
-            const res = await axios.post(`${API.ROOT_URL}${API.UPLOAD_ASSIGNMENT}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'authorization': 'Bearer ' + user.accessToken
-                }
-            });
-            console.log(res.data);
-            setName('');
-            setFile(null);
-            onClose();
+            const client = getStorageClient();
+            const cid = await client.put([file]);
+            console.log(cid);
+            if (cid) {
+                const res = await axios.post(`${API.ROOT_URL}${API.CREATE_ASSIGNMENT}`,
+                    { name, courseId: id, cid },
+                    { headers: { 'authorization': 'Bearer ' + user.accessToken } }
+                );
+                console.log(res.data);
+                setName('');
+                setFile(null);
+                onClose();
+            }
         } catch (e) {
             console.log('Error', e);
         }
@@ -73,11 +72,13 @@ const CourseDetailsPage = () => {
     return (
         <>
             <Heading>{courseCode} - {courseName}</Heading>
-            <Button onClick={onOpen}>{type === 'student' ? `Upload Submission` : `Create Assignment`}</Button>
+            {type === 'professor' ?
+                <Button onClick={onOpen}>Create Assignment</Button> : null
+            }
             <Container size={'md'} centerContent>
                 {
                     assignments ?
-                        assignments.map((a) => <AssignmentTile key={a._id} id={a._id} name={a.name} />)
+                        assignments.map((a) => <AssignmentTile key={a._id} id={a._id} name={a.name} fileCid={a.fileCid} />)
                         : null
                 }
             </Container>

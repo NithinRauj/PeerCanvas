@@ -8,7 +8,7 @@ const CourseCard = ({ id, name, courseCode, type }) => {
 
     const openCourse = () => {
         navigate(type === 'professor' ? `/prof/course/${id}` : `/student/course/${id}`
-            , { replace: true, state: { id, name, courseCode, type } }
+            , { state: { id, name, courseCode, type } }
         );
     }
 
