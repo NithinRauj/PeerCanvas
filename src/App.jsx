@@ -8,6 +8,7 @@ import SigninPage from './pages/SigninPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import EnrollCoursePage from './pages/EnrollCoursePage';
+import SubmissionsPage from './pages/SubmissionsPage';
 
 function App() {
 
@@ -56,6 +57,12 @@ function App() {
               path='course/:id'
               element={<ProtectedRoute type={'professor'}>
                 <CourseDetailsPage type={'professor'} />
+              </ProtectedRoute>}
+            />
+            <Route
+              path='course/submissions/:aid'
+              element={<ProtectedRoute type={'professor'}>
+                <SubmissionsPage type={'professor'} />
               </ProtectedRoute>}
             />
           </Route>

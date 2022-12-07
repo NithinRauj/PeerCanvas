@@ -10,17 +10,34 @@ import API from '../data/api.json';
 import { useSelector } from 'react-redux';
 import getStorageClient from '../utils/getStorageClient';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AssignmentTile = ({ id, name, fileCid }) => {
 
     const [file, setFile] = useState();
+    const [grade, setGrade] = useState(0);
     const user = useSelector((state) => state.app.userData);
     const client = useRef(null);
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {
         client.current = getStorageClient();
-    }, [])
+        if (user.type === 'student') {
+            getGrade();
+        }
+    }, []);
+
+    const getGrade = async () => {
+        try {
+            const res = await axios.get(`${API.ROOT_URL}${API.GET_GRADE}${user.userId}`,
+                { headers: { authorization: 'Bearer ' + user.accessToken } }
+            );
+            setGrade(res.data.data.grade);
+        } catch (err) {
+            console.log('Error', err);
+        }
+    }
 
     const downloadQuestion = async () => {
         const res = await client.current.get(fileCid);
@@ -34,8 +51,7 @@ const AssignmentTile = ({ id, name, fileCid }) => {
 
     const uploadSubmission = async () => {
         try {
-            const client = getStorageClient();
-            const cid = await client.put([file]);
+            const cid = await client.current.put([file]);
             console.log(cid);
             if (cid) {
                 const res = await axios.post(`${API.ROOT_URL}${API.UPLOAD_SUBMISSION}`,
@@ -54,17 +70,28 @@ const AssignmentTile = ({ id, name, fileCid }) => {
         setFile(e.target.files[0]);
     }
 
+    const openSubmissions = () => {
+        navigate('/prof/course/submissions/' + id);
+    }
+
     return (
         <>
             <Card width={'100%'} m={'5px 0px'}>
                 <CardBody>
                     <Text>{name}</Text>
+                    {user.type === 'student' ?
+                        <Text>Grade: {grade} / 100</Text>
+                        : null
+                    }
                 </CardBody>
                 <CardFooter>
                     <HStack spacing={5}>
                         <Button onClick={downloadQuestion}>Download Question</Button>
                         {user.type === 'student' ?
                             <Button onClick={onOpen}>Upload Submisssion</Button>
+                            : null}
+                        {user.type === 'professor' ?
+                            <Button onClick={openSubmissions}>View Submissions</Button>
                             : null}
                     </HStack>
                 </CardFooter>

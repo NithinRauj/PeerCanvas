@@ -9,8 +9,11 @@
     "GET_DEPTS": "dept/all/",
     "COURSES": "dept/courses/",
     "GET_STUDENT_COURSES": "dept/courses/enrollments/",
-    "ENROLL": "student/enroll",
+    "ENROLL": "student/enroll/",
     "ENROLLED_COURSES": "student/enrolledCourses/",
     "GET_ASSIGNMENTS": "dept/assignments/",
-    "UPLOAD_SUBMISSION": "student/uploadSubmission/"
+    "UPLOAD_SUBMISSION": "student/uploadSubmission/",
+    "GET_SUBMISSIONS": "dept/submissions/",
+    "SUBMIT_GRADE": "dept/submissions/submitGrade/",
+    "GET_GRADE": "dept/submissions/grade/"
 }
