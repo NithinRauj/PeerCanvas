@@ -15,6 +15,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import AssignmentTile from '../components/AssignmentTile';
 import API from '../data/api.json';
 import useAxios from '../hooks/useAxios';
+import { encryptCid } from '../utils/crypto';
 import getStorageClient from '../utils/getStorageClient';
 
 const CourseDetailsPage = () => {
@@ -55,8 +56,10 @@ const CourseDetailsPage = () => {
             const cid = await client.put([file]);
             console.log(cid);
             if (cid) {
+                const encryptedCid = encryptCid(cid);
+                console.log(encryptedCid);
                 const res = await axios.post(`${API.ROOT_URL}${API.CREATE_ASSIGNMENT}`,
-                    { name, courseId: id, cid },
+                    { name, courseId: id, cid: encryptedCid },
                     { headers: { 'authorization': 'Bearer ' + user.accessToken } }
                 );
                 console.log(res.data);

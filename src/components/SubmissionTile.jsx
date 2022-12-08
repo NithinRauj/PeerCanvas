@@ -4,6 +4,7 @@ import getStorageClient from '../utils/getStorageClient';
 import API from '../data/api.json';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { decryptCid } from '../utils/crypto';
 
 const SubmissionTile = ({ submissionId, assignmentId, userName, fileCid, currentGrade }) => {
 
@@ -13,10 +14,11 @@ const SubmissionTile = ({ submissionId, assignmentId, userName, fileCid, current
     const downloadSubmission = async () => {
         try {
             const client = getStorageClient();
-            const res = await client.get(fileCid);
+            const decryptedCid = decryptCid(fileCid);
+            const res = await client.get(decryptedCid);
             if (res.ok) {
                 const file = await res.files();
-                const url = new URL(`${API.IPFS_URL}${fileCid}/${file[0].name}`);
+                const url = new URL(`${API.IPFS_URL}${decryptedCid}/${file[0].name}`);
                 const aElement = document.createElement('a');
                 aElement.href = url;
                 aElement.setAttribute('target', '_blank');

@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import getStorageClient from '../utils/getStorageClient';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { decryptCid, encryptCid } from '../utils/crypto';
 
 const AssignmentTile = ({ id, name, fileCid }) => {
 
@@ -40,9 +41,10 @@ const AssignmentTile = ({ id, name, fileCid }) => {
     }
 
     const downloadQuestion = async () => {
-        const res = await client.current.get(fileCid);
+        const decryptedCid = decryptCid(fileCid);
+        const res = await client.current.get(decryptedCid);
         const file = await res.files();
-        const url = new URL(`${API.IPFS_URL}${fileCid}/${file[0].name}`);
+        const url = new URL(`${API.IPFS_URL}${decryptedCid}/${file[0].name}`);
         const aElement = document.createElement('a');
         aElement.href = url;
         aElement.setAttribute('target', '_blank');
@@ -53,9 +55,10 @@ const AssignmentTile = ({ id, name, fileCid }) => {
         try {
             const cid = await client.current.put([file]);
             console.log(cid);
+            const encryptedCid = encryptCid(cid);
             if (cid) {
                 const res = await axios.post(`${API.ROOT_URL}${API.UPLOAD_SUBMISSION}`,
-                    { userName: user.name, userId: user.userId, courseId: id, fileCid: cid, assignmentId: id },
+                    { userName: user.name, userId: user.userId, courseId: id, fileCid: encryptedCid, assignmentId: id },
                     { headers: { authorization: 'Bearer ' + user.accessToken } });
                 console.log(res.data);
                 setFile(null);
